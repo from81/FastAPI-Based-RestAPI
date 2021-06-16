@@ -1,4 +1,6 @@
 .ipynb_checkpoints
 .DS_Store
+.vscode
+__pycache__
 credentials_*.json
 data/**

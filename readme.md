@@ -1,6 +1,11 @@
+make `psql.sh` executable
+`chmod +x psql.sh`
 
-start local dynamodb instance:
-`java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb`
+connect to db (requires installation of [jq](https://stedolan.github.io/jq/)):
+`./psql.sh credentials_prod.json`
 
-check if dynamo is running:
-`aws dynamodb list-tables --endpoint-url http://localhost:8000`
+# Data
+
+- OSM Australia
+- boundary: https://www.igismap.com/australia-shapefile-download/
+- neighborhood: https://data.gov.au/data/dataset/nsw-local-government-areas
