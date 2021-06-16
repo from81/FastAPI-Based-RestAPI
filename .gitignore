@@ -4,3 +4,4 @@
 __pycache__
 credentials_*.json
 data/**
+*.pem

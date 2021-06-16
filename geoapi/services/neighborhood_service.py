@@ -37,7 +37,7 @@ class NeighborhoodService:
         #     )
         # """
         
-        #TODO: try / catch
+        # TODO: try / catch
         cur.execute(sql, (lon, lat))
 
         if cur.rowcount > 0:
