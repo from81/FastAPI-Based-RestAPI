@@ -8,4 +8,3 @@ RUN apt-get install -y --no-install-recommends apt-utils
 RUN apt-get upgrade -yqq 
 RUN pip install --user -r /requirements.txt
 RUN apt-get clean
-
