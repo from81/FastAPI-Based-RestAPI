@@ -1,3 +1,7 @@
+# Design
+
+![](diagram.png)
+
 # Database
 
 make `psql.sh` executable
