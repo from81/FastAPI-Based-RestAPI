@@ -17,6 +17,7 @@ sudo update-alternatives --config python3
 git clone https://github.com/from81/FastAPI-Based-RestAPI.git
 pip install -r requirements.txt
 
+
 # Data
 
 - OSM Australia

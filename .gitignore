@@ -7,3 +7,4 @@ data/**
 *.pem
 api.sh
 psql.sh
+.env
