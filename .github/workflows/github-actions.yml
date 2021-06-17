@@ -30,6 +30,8 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - run: sudo apt-get install -y apt-utils
+
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
