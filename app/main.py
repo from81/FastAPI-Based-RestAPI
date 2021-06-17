@@ -6,7 +6,6 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-import psycopg2
 import uvicorn
 
 from services.neighborhood_service import NeighborhoodService
@@ -16,8 +15,7 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_HOST = os.getenv('DB_HOST')
 DB_PORT = os.getenv('DB_PORT')
 DB_NAME = os.getenv('DB_NAME')
-
-conn = psycopg2.connect(f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
+DB_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 app = FastAPI(
     title="Geo RestAPI project",
@@ -36,8 +34,7 @@ def test():
 
 @app.get("/neighborhood")
 def neighborhood(lat: float, lon: float):
-    cur = conn.cursor()
-    geojs = NeighborhoodService.get_neighborhood(cur, lat, lon)
+    geojs = NeighborhoodService.get_neighborhood(DB_URL, lat, lon)
     return geojs
 
 if __name__ == "__main__":
