@@ -34,8 +34,7 @@ def test():
 
 @app.get("/neighborhood")
 def neighborhood(lat: float, lon: float):
-    geojs = NeighborhoodService.get_neighborhood(DB_URL, lat, lon)
-    return geojs
+    return NeighborhoodService.get_neighborhood(DB_URL, lat, lon)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=80)

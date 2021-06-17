@@ -1,13 +1,13 @@
-import json
-from os import stat
-from typing import Any, Dict, Tuple
+from typing import Any, Dict
 
+import geojson
 import numpy as np
 import psycopg2
 
-GeoJSON = Dict[str, Any]
+from models.feature import FeatureCollection
+
 class GeoJSONFormatter:
-    def __init__(self, data: GeoJSON):
+    def __init__(self, data: Dict[str, Any]):
         self.raw_data = self.processed_data = data
         self.right_hand_rule()
         self.round_decimal(6)
@@ -30,13 +30,13 @@ class GeoJSONFormatter:
         data = arr.round(n).tolist()
         self.processed_data['features'][0]['geometry']['coordinates'][0] = data
     
-    def get_processed_data(self):
-        return self.processed_data
+    def get_processed_data(self) -> FeatureCollection:
+        return FeatureCollection.parse_obj(self.processed_data)
 
 
 class NeighborhoodService:
     @staticmethod
-    def get_neighborhood(db_url: str, lat: float, lon: float) -> GeoJSON:
+    def get_neighborhood(db_url: str, lat: float, lon: float) -> FeatureCollection:
         # return GeoJson
         sql = """
             WITH neighborhood AS (
@@ -72,6 +72,6 @@ class NeighborhoodService:
 
         if cur.rowcount > 0:
             ret = cur.fetchone()
-            geojs = GeoJSONFormatter(ret[0])
-
-            return geojs.get_processed_data()
+            formatter = GeoJSONFormatter(ret[0])
+            feature_collection = formatter.get_processed_data()
+            return geojson.loads(feature_collection.json(exclude_none=True))
