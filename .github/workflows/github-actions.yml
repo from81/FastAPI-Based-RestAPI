@@ -1,7 +1,10 @@
 name: Build and push container image to AWS ECR, and deploy service using Fargate/ECS
-on: [push]
+on:
+  push:
+    branches:
+      - main
 jobs:
-  Explore-GitHub-Actions:
+  Build-Push-Deploy-Workflow:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
