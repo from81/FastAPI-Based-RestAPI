@@ -6,3 +6,4 @@ credentials_*.json
 data/**
 *.pem
 api.sh
+psql.sh
