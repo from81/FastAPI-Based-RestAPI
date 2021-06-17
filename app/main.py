@@ -1,7 +1,7 @@
 import asyncio
 from typing import Optional
 import datetime
-import json
+import os
 import logging
 
 from fastapi import FastAPI
@@ -11,10 +11,13 @@ import uvicorn
 
 from services.neighborhood_service import NeighborhoodService
 
-with open('../credentials_dev.json') as f:
-    credentials = json.load(f)
+DB_USERNAME = os.getenv('DB_USERNAME')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+DB_PORT = os.getenv('DB_PORT')
+DB_NAME = os.getenv('DB_NAME')
 
-conn = psycopg2.connect(f"postgresql://{credentials['username']}:{credentials['password']}@{credentials['host']}:{credentials['port']}/{credentials['database']}")
+conn = psycopg2.connect(f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
 app = FastAPI(
     title="Geo RestAPI project",
@@ -34,11 +37,8 @@ def test():
 @app.get("/neighborhood")
 def neighborhood(lat: float, lon: float):
     cur = conn.cursor()
-    neighborhood, geom = NeighborhoodService.get_neighborhood(cur, lat, lon)
-    return {
-        'neighborhood': neighborhood,
-        'geometry': geom
-    }
+    geojs = NeighborhoodService.get_neighborhood(cur, lat, lon)
+    return geojs
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=80)
