@@ -1,14 +1,26 @@
 import json
-from typing import Dict, Tuple
+from typing import Any, Dict, Tuple
 
 from psycopg2.extensions import cursor
 
 Cursor = cursor
-Geometry = Dict
+GeoJSON = Dict[str, Any]
+
+def right_hand_rule(data: GeoJSON) -> GeoJSON:
+    """
+    Section 3.1.6 https://datatracker.ietf.org/doc/html/rfc7946
+    
+    A linear ring MUST follow the right-hand rule with respect to the
+    area it bounds, i.e., exterior rings are counterclockwise, and
+    holes are clockwise.
+    """
+
+    data['features'][0]['geometry']['coordinates'][0] = data['features'][0]['geometry']['coordinates'][0][::-1]
+    return data
 
 class NeighborhoodService:
     @staticmethod
-    def get_neighborhood(cur: Cursor, lat: float, lon: float) -> Tuple[str, Geometry]:
+    def get_neighborhood(cur: Cursor, lat: float, lon: float) -> GeoJSON:
         # return GeoJson
         sql = """
             WITH neighborhood AS (
@@ -42,4 +54,4 @@ class NeighborhoodService:
 
         if cur.rowcount > 0:
             geojs = cur.fetchone()
-            return geojs[0]
+            return right_hand_rule(geojs[0])
