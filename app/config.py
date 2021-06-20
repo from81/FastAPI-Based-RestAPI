@@ -5,6 +5,10 @@ from starlette.datastructures import Secret
 
 if os.path.exists('../.env'):
     config = Config('../.env')
+else:
+    config = None
+
+if config:
     DB_USERNAME = config("DB_USERNAME", cast=str)
     DB_PASSWORD = config("DB_PASSWORD", cast=Secret)
     DB_HOST = config("DB_HOST", cast=str, default="localhost")
@@ -17,5 +21,9 @@ else:
     DB_PORT = os.getenv('DB_PORT')
     DB_NAME = os.getenv('DB_NAME')
 
-MIN_CONNECTIONS_COUNT = 0
-MAX_CONNECTIONS_COUNT = 1000
+DB_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+# MAX_CONNECTIONS_COUNT: int = config("MAX_CONNECTIONS_COUNT", cast=int, default=10)
+# MIN_CONNECTIONS_COUNT: int = config("MIN_CONNECTIONS_COUNT", cast=int, default=10)
+MIN_CONNECTIONS_COUNT = 5
+MAX_CONNECTIONS_COUNT = 100

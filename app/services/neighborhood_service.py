@@ -1,10 +1,13 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
+from asyncpg.connection import Connection
 import geojson
+from loguru import logger
 import numpy as np
 import psycopg2
 
 from models.feature import FeatureCollection
+from queries import queries
 
 class GeoJSONFormatter:
     def __init__(self, data: Dict[str, Any]):
@@ -36,42 +39,12 @@ class GeoJSONFormatter:
 
 class NeighborhoodService:
     @staticmethod
-    def get_neighborhood(db_url: str, lat: float, lon: float) -> FeatureCollection:
-        # return GeoJson
-        sql = """
-            WITH neighborhood AS (
-                SELECT neighborhood, ST_Transform(geometry, 4326) AS geometry
-                FROM nsw_neighborhood
-                WHERE ST_Contains(
-                    geometry, 
-                    ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s), 4326), 8058)
-                )
-            )
-            SELECT json_build_object(
-                'type', 'FeatureCollection',
-                'features', json_agg(ST_AsGeoJSON(neighborhood.*)::json)
-            )
-            FROM neighborhood
-        """
-
-        # return neighborhood and geometry separately
-        # sql = """
-        #     SELECT neighborhood
-        #         , ST_AsGeoJSON(ST_Transform(geometry, 4326)) AS geometry
-        #     FROM nsw_neighborhood
-        #     WHERE ST_Contains(
-        #         geometry, 
-        #         ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s), 4326), 8058)
-        #     )
-        # """
-        
+    @logger.catch
+    async def get_neighborhood(conn: Connection, lat: float, lon: float) -> FeatureCollection:
         # TODO: try / catch
-        conn = psycopg2.connect(db_url)
-        cur = conn.cursor()
-        cur.execute(sql, (lon, lat))
-
-        if cur.rowcount > 0:
-            ret = cur.fetchone()
-            formatter = GeoJSONFormatter(ret[0])
+        ret: List = await queries.get_neighborhood_from_coordinate_as_geojson(conn, lat=lat, lon=lon)
+        
+        if len(ret) > 0:
+            formatter = GeoJSONFormatter(geojson.loads(ret[0]['json_build_object']))
             feature_collection = formatter.get_processed_data()
             return geojson.loads(feature_collection.json(exclude_none=True))
