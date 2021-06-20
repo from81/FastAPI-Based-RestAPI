@@ -2,8 +2,7 @@ import asyncio
 import datetime
 
 import asyncpg
-from asyncpg.connection import Connection
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from loguru import logger
 import uvicorn
@@ -13,15 +12,15 @@ from config import (
     MIN_CONNECTIONS_COUNT,
     MAX_CONNECTIONS_COUNT
 )
-from database import _get_connection_from_pool
-from models.feature import FeatureCollection
-from services.neighborhood_service import NeighborhoodService
+from endpoint.neighborhood import neighborhood_router
 
 app = FastAPI(
     title="Geo RestAPI project",
     description="This is a very fancy project, with auto docs for the API and everything",
     version="1.0",
 )
+
+app.include_router(neighborhood_router, prefix="/neighborhood")
 
 @app.on_event("startup")
 async def startup():
@@ -59,12 +58,6 @@ def root():
 @app.get("/test")
 def test():
     return JSONResponse(status_code=200, content={"message": "OK"})
-
-@app.get("/neighborhood", response_model=FeatureCollection, response_model_exclude_unset=True)
-async def neighborhood(
-    lat: float, lon: float, conn: Connection = Depends(_get_connection_from_pool)
-) -> FeatureCollection:
-    return await NeighborhoodService.get_neighborhood(conn, lat, lon)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=80)

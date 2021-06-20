@@ -6,7 +6,7 @@ from loguru import logger
 import numpy as np
 import psycopg2
 
-from models.feature import FeatureCollection
+from model.feature import FeatureCollection
 from queries import queries
 
 class GeoJSONFormatter:
