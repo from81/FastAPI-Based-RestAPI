@@ -1,20 +1,21 @@
 import asyncio
-from typing import Optional
 import datetime
-import os
-import logging
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import uvicorn
 
+from config import (
+    DB_USERNAME, 
+    DB_PASSWORD, 
+    DB_HOST, 
+    DB_PORT, 
+    DB_NAME,
+    MIN_CONNECTIONS_COUNT,
+    MAX_CONNECTIONS_COUNT
+)
 from services.neighborhood_service import NeighborhoodService
 
-DB_USERNAME = os.getenv('DB_USERNAME')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_HOST = os.getenv('DB_HOST')
-DB_PORT = os.getenv('DB_PORT')
-DB_NAME = os.getenv('DB_NAME')
 DB_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 app = FastAPI(
