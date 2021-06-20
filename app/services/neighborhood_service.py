@@ -33,18 +33,17 @@ class GeoJSONFormatter:
         data = arr.round(n).tolist()
         self.processed_data['features'][0]['geometry']['coordinates'][0] = data
     
-    def get_processed_data(self) -> FeatureCollection:
-        return FeatureCollection.parse_obj(self.processed_data)
+    def get_processed_data(self) -> Dict[str, Any]:
+        return self.processed_data
 
 
 class NeighborhoodService:
     @staticmethod
     @logger.catch
-    async def get_neighborhood(conn: Connection, lat: float, lon: float) -> FeatureCollection:
+    async def get_neighborhood(conn: Connection, lat: float, lon: float) -> Dict[str, Any]:
         # TODO: try / catch
         ret: List = await queries.get_neighborhood_from_coordinate_as_geojson(conn, lat=lat, lon=lon)
         
         if len(ret) > 0:
             formatter = GeoJSONFormatter(geojson.loads(ret[0]['json_build_object']))
-            feature_collection = formatter.get_processed_data()
-            return geojson.loads(feature_collection.json(exclude_none=True))
+            return formatter.get_processed_data()

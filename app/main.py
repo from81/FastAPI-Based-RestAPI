@@ -60,8 +60,10 @@ def root():
 def test():
     return JSONResponse(status_code=200, content={"message": "OK"})
 
-@app.get("/neighborhood", response_model=FeatureCollection)
-async def neighborhood(lat: float, lon: float, conn: Connection = Depends(_get_connection_from_pool)):
+@app.get("/neighborhood", response_model=FeatureCollection, response_model_exclude_unset=True)
+async def neighborhood(
+    lat: float, lon: float, conn: Connection = Depends(_get_connection_from_pool)
+) -> FeatureCollection:
     return await NeighborhoodService.get_neighborhood(conn, lat, lon)
 
 if __name__ == "__main__":
