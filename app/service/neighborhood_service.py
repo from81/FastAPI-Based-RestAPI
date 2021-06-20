@@ -4,9 +4,7 @@ from asyncpg.connection import Connection
 import geojson
 from loguru import logger
 import numpy as np
-import psycopg2
 
-from model.feature import FeatureCollection
 from queries import queries
 
 class GeoJSONFormatter:

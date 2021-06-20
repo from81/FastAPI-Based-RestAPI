@@ -1,3 +1,30 @@
+-- name: get-tables
+-- Show tables
+SELECT tablename
+FROM pg_catalog.pg_tables
+WHERE schemaname != 'pg_catalog' AND 
+    schemaname != 'information_schema';
+
+-- name: create-apikey-table
+-- Create apikey table
+CREATE TABLE IF NOT EXISTS apikey (
+    email VARCHAR,
+    token VARCHAR,
+    PRIMARY KEY(email, token)
+);
+
+-- name: insert-apikey!
+-- Insert apikey
+INSERT INTO apikey (email, token) VALUES (:email, :token);
+
+-- name: verify-apikey
+-- Verify apikey
+SELECT email, token FROM apikey WHERE token = :token;
+
+-- name: delete-apikey!
+-- Delete rows with matching email address
+DELETE FROM apikey WHERE email = :email;
+
 -- name: get-neighborhood-from-coordinate-as-geojson
 -- Given a coordinate, return neighborhood GeoJSON format
 WITH neighborhood AS (
