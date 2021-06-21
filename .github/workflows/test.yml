@@ -1,4 +1,4 @@
-name: Test Coveralls Parallel
+name: Test Coveralls
 on:
   push:
     branches:
@@ -25,5 +25,5 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
         fail_ci_if_error: true
-        verbose: true
+        # verbose: true
         
