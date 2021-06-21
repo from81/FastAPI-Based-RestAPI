@@ -3,11 +3,11 @@ from datetime import datetime, time, timedelta
 from asyncpg.connection import Connection
 from asyncpg.exceptions import UniqueViolationError
 import jwt
-from jwt.exceptions import ExpiredSignatureError
+from jwt.exceptions import ExpiredSignatureError, DecodeError
 from loguru import logger
 
 from app.config import JWT_PRIVATE_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-# from app.exceptions import DoesNotExistException
+from app.exceptions.exceptions import TokenNotFoundError
 from app.queries import queries
 
 class TokenService:
@@ -37,33 +37,35 @@ class TokenService:
         try:
             ret = await queries.insert_apikey(conn, email, token)
             return True
-        except UniqueViolationError as e:
-            logger.warning("Email and token already exists.")
-            # TODO: handle exception if token and email already exists -> show message in frontend
-            return True
+        # except UniqueViolationError as e:
+        #     logger.warning("Email and token already exists.")
+        #     # TODO: handle exception if token and email already exists -> show message in frontend
+        #     return True
         except Exception as e:
             logger.warning(e)
             return False
 
     @staticmethod
     @logger.catch
-    async def verify_token(conn: Connection, token: str) -> bool:
+    async def verify_token(conn: Connection, token: str) -> dict:
         await TokenService.create_table_if_not_exists(conn)
         ret = await queries.verify_apikey(conn, token)
+        
+        if len(ret) == 0:
+            raise TokenNotFoundError(token)
+        
+        ret = ret[0]
+        
         try:
-            ret = ret[0]
-            if token == ret['token']:
-                decoded: dict = jwt.decode(ret['token'], JWT_PRIVATE_KEY, algorithms=ALGORITHM)
-                return True
-        except IndexError as e:
-            logger.warning(e)
-            return False
-        # except DoesNotExistException as e:
-        #     pass
+            decoded: dict = jwt.decode(ret['token'], JWT_PRIVATE_KEY, algorithms=ALGORITHM)
+            return decoded
         except ExpiredSignatureError as e:
-            #TODO redirect user to "token/" for updating apikey
             logger.warning(e)
-            return False
+            raise e
+        except DecodeError as e:
+            # triggered if empty string passed as token
+            logger.warning(e)
+            raise e
         except Exception as e:
             logger.warning(e)
-            return False
+            raise e

@@ -15,7 +15,7 @@ templates = Jinja2Templates(directory="app/templates")
 @apikey_router.get("", response_class=HTMLResponse)
 @apikey_router.post("")
 @logger.catch
-async def token(request: Request, conn: Connection = Depends(_get_connection_from_pool)):
+async def apikey(request: Request, conn: Connection = Depends(_get_connection_from_pool)):
     if request.method == "GET":
         return templates.TemplateResponse("request_token.html", {"request": request})
     elif request.method == "POST":

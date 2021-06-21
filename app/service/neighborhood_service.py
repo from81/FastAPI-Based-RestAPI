@@ -45,3 +45,5 @@ class NeighborhoodService:
         if len(ret) > 0:
             formatter = GeoJSONFormatter(geojson.loads(ret[0]['json_build_object']))
             return formatter.get_processed_data()
+        else:
+            raise LatLonError(lat, lon)
