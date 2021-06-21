@@ -8,3 +8,5 @@ data/**
 api.sh
 psql.sh
 .env
+.vscode
+.pytest_cache
