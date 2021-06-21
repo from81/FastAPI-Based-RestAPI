@@ -27,7 +27,11 @@ app = FastAPI(
 )
 app.mount("/static", StaticFiles(directory="app/templates/static"), name="static")
 app.include_router(neighborhood_router, prefix="/neighborhood")
-app.include_router(apikey_router, prefix="/token")
+app.include_router(apikey_router, prefix="/apikey")
+app.include_router(token_router, prefix="/token")
+
+# app.add_exception_handler(HTTPException, http_error_handler)
+# app.add_exception_handler(RequestValidationError, http422_error_handler)
 
 @app.on_event("startup")
 async def startup():
@@ -41,9 +45,8 @@ async def startup():
         )
         logger.info("Connection established")
     except Exception as e:
-        logger.warning("--- DB CONNECTION ERROR ---")
-        logger.warning(e)
-        logger.warning("--- DB CONNECTION ERROR ---")
+        logger.warning(f"{e} -> {DB_URL}")
+        raise DBConnectionError(DB_URL, str(e))
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -53,9 +56,8 @@ async def shutdown():
         await app.state.pool.close()
         logger.info("Connection closed")
     except Exception as e:
-        logger.warning("--- DB DISCONNECT ERROR ---")
-        logger.warning(e)
-        logger.warning("--- DB DISCONNECT ERROR ---")
+        logger.warning(f"{e} -> {DB_URL}")
+        raise DBDisconnectError(DB_URL, str(e))
 
 @app.get("/")
 def root():

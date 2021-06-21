@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 from pydantic import BaseModel
 from pydantic import Field, validator
 
-from model.geometry import BBox, Geometry
+from app.model.geometry import BBox, Geometry
 
 # class Position(BaseModel):
 #     lat: float
