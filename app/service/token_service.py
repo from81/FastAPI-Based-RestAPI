@@ -6,8 +6,9 @@ import jwt
 from jwt.exceptions import ExpiredSignatureError
 from loguru import logger
 
-from config import JWT_PRIVATE_KEY, JWT_SUBJECT, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from queries import queries
+from app.config import JWT_PRIVATE_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+# from app.exceptions import DoesNotExistException
+from app.queries import queries
 
 class APIKeyService:
     @staticmethod
@@ -19,8 +20,8 @@ class APIKeyService:
     @logger.catch
     def issue_token(conn: Connection, email: str) -> str:
         payload = {
-            'email': email,
-            'exp': datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            'iss': email,
+            'exp': datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
         }
         encoded = jwt.encode(payload, JWT_PRIVATE_KEY, algorithm=ALGORITHM)
         return encoded
@@ -58,6 +59,8 @@ class APIKeyService:
             #TODO redirect user to "token/" for updating apikey
             logger.warning(e)
             return False
+        # except DoesNotExistException as e:
+        #     pass
         except Exception as e:
             logger.warning(e)
             return False
