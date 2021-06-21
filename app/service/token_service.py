@@ -10,7 +10,7 @@ from app.config import JWT_PRIVATE_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 # from app.exceptions import DoesNotExistException
 from app.queries import queries
 
-class APIKeyService:
+class TokenService:
     @staticmethod
     @logger.catch
     async def create_table_if_not_exists(conn: Connection):
@@ -29,7 +29,7 @@ class APIKeyService:
     @staticmethod
     @logger.catch
     async def register_token(conn: Connection, email: str, token: str) -> bool:
-        await APIKeyService.create_table_if_not_exists(conn)
+        await TokenService.create_table_if_not_exists(conn)
         
         # delete any previously issued tokens
         await queries.delete_apikey(conn, email)
@@ -48,19 +48,22 @@ class APIKeyService:
     @staticmethod
     @logger.catch
     async def verify_token(conn: Connection, token: str) -> bool:
-        await APIKeyService.create_table_if_not_exists(conn)
+        await TokenService.create_table_if_not_exists(conn)
         ret = await queries.verify_apikey(conn, token)
         try:
             ret = ret[0]
             if token == ret['token']:
                 decoded: dict = jwt.decode(ret['token'], JWT_PRIVATE_KEY, algorithms=ALGORITHM)
                 return True
-        except ExpiredSignatureError as e:
-            #TODO redirect user to "token/" for updating apikey
+        except IndexError as e:
             logger.warning(e)
             return False
         # except DoesNotExistException as e:
         #     pass
+        except ExpiredSignatureError as e:
+            #TODO redirect user to "token/" for updating apikey
+            logger.warning(e)
+            return False
         except Exception as e:
             logger.warning(e)
             return False

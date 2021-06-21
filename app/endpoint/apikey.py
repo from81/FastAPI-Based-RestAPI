@@ -6,11 +6,11 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from loguru import logger
 
-from database import _get_connection_from_pool
-from service.apikey_service import APIKeyService
+from app.database import _get_connection_from_pool
+from app.service.token_service import TokenService
 
 apikey_router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 
 @apikey_router.get("", response_class=HTMLResponse)
 @apikey_router.post("")
@@ -23,8 +23,8 @@ async def token(request: Request, conn: Connection = Depends(_get_connection_fro
         
         try:
             logger.info(f"Issuing token for {email}")
-            token = APIKeyService.issue_token(conn, email)
-            await APIKeyService.register_token(conn, email, token)
+            token = TokenService.issue_token(conn, email)
+            await TokenService.register_token(conn, email, token)
             payload = {"token": token, "request": request}
             return templates.TemplateResponse("request_token.html", payload)
         except Exception as e:

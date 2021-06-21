@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from asyncpg.connection import Connection
 
-from database import _get_connection_from_pool
-from model.feature import FeatureCollection
-from service.neighborhood_service import NeighborhoodService
-from service.apikey_service import APIKeyService
+from app.database import _get_connection_from_pool
+from app.model.feature import FeatureCollection
+from app.service.neighborhood_service import NeighborhoodService
+from app.service.apikey_service import APIKeyService
 
 neighborhood_router = APIRouter()
 

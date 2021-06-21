@@ -5,7 +5,7 @@ import geojson
 from loguru import logger
 import numpy as np
 
-from queries import queries
+from app.queries import queries
 
 class GeoJSONFormatter:
     def __init__(self, data: Dict[str, Any]):

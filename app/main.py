@@ -9,20 +9,23 @@ from fastapi.staticfiles import StaticFiles
 from loguru import logger
 import uvicorn
 
-from config import (
+from app.config import (
     DB_URL,
     MIN_CONNECTIONS_COUNT,
     MAX_CONNECTIONS_COUNT
 )
-from endpoint.neighborhood import neighborhood_router
-from endpoint.apikey import apikey_router
+from app.endpoint.neighborhood import neighborhood_router
+from app.endpoint.apikey import apikey_router
+from app.endpoint.token import token_router
+from app.exceptions.exceptions import DBConnectionError, DBDisconnectError
 
 app = FastAPI(
     title="Geo RestAPI project",
     description="This is a very fancy project, with auto docs for the API and everything",
     version="1.0",
+    debug=True
 )
-app.mount("/static", StaticFiles(directory="templates/static"), name="static")
+app.mount("/static", StaticFiles(directory="app/templates/static"), name="static")
 app.include_router(neighborhood_router, prefix="/neighborhood")
 app.include_router(apikey_router, prefix="/token")
 
