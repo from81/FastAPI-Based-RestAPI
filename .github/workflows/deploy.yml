@@ -1,4 +1,5 @@
-name: Build and push container image to AWS ECR, and deploy service using Fargate/ECS
+# Build and push container image to AWS ECR, and deploy service with updated task definition
+name: Deploy
 on:
   push:
     branches:
