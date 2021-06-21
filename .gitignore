@@ -10,3 +10,4 @@ psql.sh
 .env
 .vscode
 .pytest_cache
+*.ipynb
