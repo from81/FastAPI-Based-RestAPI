@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - dev
+      - test
 jobs:
   Test:
     runs-on: ubuntu-latest
