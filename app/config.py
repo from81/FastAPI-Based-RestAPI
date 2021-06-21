@@ -3,8 +3,8 @@ import os
 from starlette.config import Config
 from starlette.datastructures import Secret
 
-if os.path.exists('../.env'):
-    config = Config('../.env')
+if os.path.exists('.env'):
+    config = Config('.env')
 else:
     config = None
 
@@ -30,6 +30,6 @@ DB_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME
 MIN_CONNECTIONS_COUNT = 5
 MAX_CONNECTIONS_COUNT = 100
 
-JWT_SUBJECT = "access"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # one week
+API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJrYWl5aGlyb3RhQGdtYWlsLmNvbSIsImV4cCI6MTYyNDg3MzAzNX0.bE9CiNCp7rQXBq9jXtY7lkSm5fpbMrFUncF1E4yRMbs"

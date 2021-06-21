@@ -19,9 +19,10 @@ connect to db (requires installation of [jq](https://stedolan.github.io/jq/)):
 # Rest API
 
 ## Run
-`python main.py`
-or
-`uvicorn main:app --reload`
+```
+uvicorn --host=0.0.0.0 --port=80 app.main:app --reload
+uvicorn --host=0.0.0.0 --port=80 app.main:app
+```
 
 ```
 docker build -t geoapiv1 ./
@@ -29,7 +30,6 @@ docker build -t geoapiv1 ./
 docker container run --publish 80:80 --detach --env-file ./.env --name <container_name> <image_name>
 docker container run --publish 80:80 --detach --env-file ./.env --name geoapi geoapiv1
 docker container run --publish 80:80 --env-file ./.env --name geoapi geoapiv1
-
 ```
 
 ## Update desired task count

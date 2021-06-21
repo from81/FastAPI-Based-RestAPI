@@ -9,22 +9,29 @@ from fastapi.staticfiles import StaticFiles
 from loguru import logger
 import uvicorn
 
-from config import (
+from app.config import (
     DB_URL,
     MIN_CONNECTIONS_COUNT,
     MAX_CONNECTIONS_COUNT
 )
-from endpoint.neighborhood import neighborhood_router
-from endpoint.apikey import apikey_router
+from app.endpoint.neighborhood import neighborhood_router
+from app.endpoint.apikey import apikey_router
+from app.endpoint.token import token_router
+from app.exceptions.exceptions import DBConnectionError, DBDisconnectError
 
 app = FastAPI(
     title="Geo RestAPI project",
     description="This is a very fancy project, with auto docs for the API and everything",
     version="1.0",
+    debug=True
 )
-app.mount("/static", StaticFiles(directory="templates/static"), name="static")
+app.mount("/static", StaticFiles(directory="app/templates/static"), name="static")
 app.include_router(neighborhood_router, prefix="/neighborhood")
-app.include_router(apikey_router, prefix="/token")
+app.include_router(apikey_router, prefix="/apikey")
+app.include_router(token_router, prefix="/token")
+
+# app.add_exception_handler(HTTPException, http_error_handler)
+# app.add_exception_handler(RequestValidationError, http422_error_handler)
 
 @app.on_event("startup")
 async def startup():
@@ -38,9 +45,8 @@ async def startup():
         )
         logger.info("Connection established")
     except Exception as e:
-        logger.warning("--- DB CONNECTION ERROR ---")
-        logger.warning(e)
-        logger.warning("--- DB CONNECTION ERROR ---")
+        logger.warning(f"{e} -> {DB_URL}")
+        raise DBConnectionError(DB_URL, str(e))
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -50,9 +56,8 @@ async def shutdown():
         await app.state.pool.close()
         logger.info("Connection closed")
     except Exception as e:
-        logger.warning("--- DB DISCONNECT ERROR ---")
-        logger.warning(e)
-        logger.warning("--- DB DISCONNECT ERROR ---")
+        logger.warning(f"{e} -> {DB_URL}")
+        raise DBDisconnectError(DB_URL, str(e))
 
 @app.get("/")
 def root():

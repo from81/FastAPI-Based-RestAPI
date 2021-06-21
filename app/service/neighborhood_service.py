@@ -5,7 +5,7 @@ import geojson
 from loguru import logger
 import numpy as np
 
-from queries import queries
+from app.queries import queries
 
 class GeoJSONFormatter:
     def __init__(self, data: Dict[str, Any]):
@@ -45,3 +45,5 @@ class NeighborhoodService:
         if len(ret) > 0:
             formatter = GeoJSONFormatter(geojson.loads(ret[0]['json_build_object']))
             return formatter.get_processed_data()
+        else:
+            raise LatLonError(lat, lon)

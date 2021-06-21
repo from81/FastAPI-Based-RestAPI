@@ -3,13 +3,14 @@ from datetime import datetime, time, timedelta
 from asyncpg.connection import Connection
 from asyncpg.exceptions import UniqueViolationError
 import jwt
-from jwt.exceptions import ExpiredSignatureError
+from jwt.exceptions import ExpiredSignatureError, DecodeError
 from loguru import logger
 
-from config import JWT_PRIVATE_KEY, JWT_SUBJECT, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from queries import queries
+from app.config import JWT_PRIVATE_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.exceptions.exceptions import TokenNotFoundError
+from app.queries import queries
 
-class APIKeyService:
+class TokenService:
     @staticmethod
     @logger.catch
     async def create_table_if_not_exists(conn: Connection):
@@ -19,8 +20,8 @@ class APIKeyService:
     @logger.catch
     def issue_token(conn: Connection, email: str) -> str:
         payload = {
-            'email': email,
-            'exp': datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            'iss': email,
+            'exp': datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
         }
         encoded = jwt.encode(payload, JWT_PRIVATE_KEY, algorithm=ALGORITHM)
         return encoded
@@ -28,7 +29,7 @@ class APIKeyService:
     @staticmethod
     @logger.catch
     async def register_token(conn: Connection, email: str, token: str) -> bool:
-        await APIKeyService.create_table_if_not_exists(conn)
+        await TokenService.create_table_if_not_exists(conn)
         
         # delete any previously issued tokens
         await queries.delete_apikey(conn, email)
@@ -36,28 +37,35 @@ class APIKeyService:
         try:
             ret = await queries.insert_apikey(conn, email, token)
             return True
-        except UniqueViolationError as e:
-            logger.warning("Email and token already exists.")
-            # TODO: handle exception if token and email already exists -> show message in frontend
-            return True
+        # except UniqueViolationError as e:
+        #     logger.warning("Email and token already exists.")
+        #     # TODO: handle exception if token and email already exists -> show message in frontend
+        #     return True
         except Exception as e:
             logger.warning(e)
             return False
 
     @staticmethod
     @logger.catch
-    async def verify_token(conn: Connection, token: str) -> bool:
-        await APIKeyService.create_table_if_not_exists(conn)
+    async def verify_token(conn: Connection, token: str) -> dict:
+        await TokenService.create_table_if_not_exists(conn)
         ret = await queries.verify_apikey(conn, token)
+        
+        if len(ret) == 0:
+            raise TokenNotFoundError(token)
+        
+        ret = ret[0]
+        
         try:
-            ret = ret[0]
-            if token == ret['token']:
-                decoded: dict = jwt.decode(ret['token'], JWT_PRIVATE_KEY, algorithms=ALGORITHM)
-                return True
+            decoded: dict = jwt.decode(ret['token'], JWT_PRIVATE_KEY, algorithms=ALGORITHM)
+            return decoded
         except ExpiredSignatureError as e:
-            #TODO redirect user to "token/" for updating apikey
             logger.warning(e)
-            return False
+            raise e
+        except DecodeError as e:
+            # triggered if empty string passed as token
+            logger.warning(e)
+            raise e
         except Exception as e:
             logger.warning(e)
-            return False
+            raise e
