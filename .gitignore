@@ -12,3 +12,4 @@ psql.sh
 .pytest_cache
 *.ipynb
 .coverage
+coverage.xml
