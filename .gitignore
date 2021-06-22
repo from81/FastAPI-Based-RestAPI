@@ -4,6 +4,7 @@
 __pycache__
 credentials_*.json
 data/**
+!data/*.json
 *.pem
 api.sh
 psql.sh
