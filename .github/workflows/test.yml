@@ -32,7 +32,7 @@ jobs:
       run: psql -U postgres -h localhost -d geo -f app/sql/ddl.sql
     - name: Create tables
       run: |
-        psql -U postgres -h localhost -d geo -f app/sql/ddl.sql
+        PGPASSWORD=postgres psql -U postgres -h localhost -d geo -f app/sql/ddl.sql
         ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_polygon.json" -nln nsw_polygon
         ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_poi.json" -nln nsw_poi
         ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_neighborhood.json" -nln nsw_neighborhood
