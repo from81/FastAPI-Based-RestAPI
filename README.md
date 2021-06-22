@@ -44,4 +44,4 @@ aws ecs update-service --cluster geoapi-cluster --service geoapi --desired-count
 
 ## pytest for codecov
 
-pytest --verbose --color=yes --assert=plain
+pytest --verbose --color=yes --cov=app

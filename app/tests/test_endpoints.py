@@ -45,3 +45,20 @@ def test_get_neighborhood(app: FastAPI, config):
     assert response.status_code == 200
     assert js["type"] == "FeatureCollection"
     assert js["features"][0]["properties"]["neighborhood"] == "SYDNEY"
+
+def test_get_neighborhood_expired_apikey(app: FastAPI, expired_apikey: str):
+    with TestClient(app) as client:
+        response = client.get(
+            "/neighborhood", 
+            params={
+                "lat": -33.8657512, 
+                "lon": 151.2030053,
+                "apikey": expired_apikey
+            }
+        )
+    assert response.template.name == 'request_token.html'
+    expected_payload = {
+        "message": "Token expired, please get a new API Key 🥲", 
+        "apikey": expired_apikey
+    }
+    assert response.json() == expected_payload
