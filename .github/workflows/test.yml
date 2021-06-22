@@ -36,9 +36,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install gdal-bin
         ogrinfo --version
-        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_polygon.json" -nln nsw_polygon
-        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_poi.json" -nln nsw_poi
-        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_neighborhood_sample.json" -nln nsw_neighborhood
+        ogr2ogr -f "PostgreSQL" PG:"host=localhost port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_polygon.json" -nln nsw_polygon
+        ogr2ogr -f "PostgreSQL" PG:"host=localhost port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_poi.json" -nln nsw_poi
+        ogr2ogr -f "PostgreSQL" PG:"host=localhost port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_neighborhood_sample.json" -nln nsw_neighborhood
         # python -c "import geopandas as gpd; gpd.read_file().to_postgis()"
     - name: Test
       run: pytest --verbose --color=yes --cov=app --cov-report=xml
