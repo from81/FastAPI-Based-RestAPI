@@ -33,9 +33,9 @@ jobs:
     - name: Create tables
       run: |
         psql -U postgres -h localhost -d geo -f app/sql/ddl.sql
-        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='password'" "data/nsw_polygon.json" -nln nsw_polygon
-        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='password'" "data/nsw_poi.json" -nln nsw_poi
-        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='password'" "data/nsw_neighborhood.json" -nln nsw_neighborhood
+        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_polygon.json" -nln nsw_polygon
+        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_poi.json" -nln nsw_poi
+        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_neighborhood.json" -nln nsw_neighborhood
         # pip install geopandas
         # python -c "import geopandas as gpd; gpd.read_file().to_postgis()"
     - name: Test
