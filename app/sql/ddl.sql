@@ -10,11 +10,10 @@ BEGIN;
 
     CREATE TABLE IF NOT EXISTS nsw_poi (
         osm_id TEXT,
-        code BIGINT,
         fclass TEXT,
         "name" TEXT
     );
-    SELECT AddGeometryColumn ('nsw_poi', 'geometry', 8058, 'POLYGON', 2);
+    SELECT AddGeometryColumn ('nsw_poi', 'geometry', 8058, 'MULTIPOLYGON', 2);
     CREATE INDEX idx_nsw_poi_geometry ON nsw_poi USING GIST ("geometry");
 
     CREATE TABLE IF NOT EXISTS nsw_polygon (
