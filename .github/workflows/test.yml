@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:13.3-alpine
+        image: postgis/postgis:13
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -28,6 +28,16 @@ jobs:
         # architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
     - name: Install libraries
       run: pip install -r requirements.txt
+    - name: Create tables
+      run: psql -U postgres -h localhost -d geo -f app/sql/ddl.sql
+    - name: Create tables
+      run: |
+        psql -U postgres -h localhost -d geo -f app/sql/ddl.sql
+        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='password'" "data/nsw_polygon.json" -nln nsw_polygon
+        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='password'" "data/nsw_poi.json" -nln nsw_poi
+        ogr2ogr -f "PostgreSQL" PG:"host=172.17.2.176 port=5432 dbname=geo user='postgres' password='password'" "data/nsw_neighborhood.json" -nln nsw_neighborhood
+        # pip install geopandas
+        # python -c "import geopandas as gpd; gpd.read_file().to_postgis()"
     - name: Test
       run: pytest --verbose --color=yes --cov=app --cov-report=xml
     - name: Upload to Codecov
