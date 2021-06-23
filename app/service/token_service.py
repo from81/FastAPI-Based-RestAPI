@@ -23,7 +23,7 @@ class TokenService:
             'iss': email,
             'exp': datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         }
-        encoded = jwt.encode(payload, JWT_PRIVATE_KEY, algorithm=ALGORITHM)
+        encoded = jwt.encode(payload, str(JWT_PRIVATE_KEY), algorithm=ALGORITHM)
         return encoded
 
     @staticmethod
@@ -57,7 +57,7 @@ class TokenService:
         ret = ret[0]
         
         try:
-            decoded: dict = jwt.decode(ret['token'], JWT_PRIVATE_KEY, algorithms=ALGORITHM)
+            decoded: dict = jwt.decode(ret['token'], str(JWT_PRIVATE_KEY), algorithms=ALGORITHM)
             return decoded
         except ExpiredSignatureError as e:
             logger.warning(e)

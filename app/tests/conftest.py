@@ -19,7 +19,7 @@ def client() -> TestClient:
 
 @pytest.fixture
 def config():
-    from app import config 
+    from app.config import config 
     return config
 
 @pytest.fixture
@@ -30,4 +30,4 @@ def expired_apikey():
 @pytest.fixture
 def valid_apikey():
     from app.config import TEST_API_KEY
-    return TEST_API_KEY
+    return str(TEST_API_KEY)

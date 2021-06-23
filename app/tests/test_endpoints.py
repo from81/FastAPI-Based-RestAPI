@@ -31,14 +31,14 @@ def test_create_apikey(app: FastAPI):
     assert response.status_code == 200
     assert response.template.name == 'request_token.html'
 
-def test_get_neighborhood(app: FastAPI, config):
+def test_get_neighborhood(app: FastAPI, config: Config):
     with TestClient(app) as client:
         response = client.get(
             "/neighborhood", 
             params={
                 "lat": -33.8657512, 
                 "lon": 151.2030053,
-                "apikey": config.TEST_API_KEY
+                "apikey": str(config.TEST_API_KEY)
             }
         )
     js = response.json()

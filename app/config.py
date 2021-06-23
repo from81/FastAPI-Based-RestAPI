@@ -20,14 +20,15 @@ DB_HOST = config("DB_HOST", cast=str, default="localhost")
 DB_PORT = config("DB_PORT", cast=str, default="5432")
 DB_NAME = config("DB_NAME", cast=str, default="geo")
 
-if DEBUG:
-    DB_URL = f"postgresql://postgres:@localhost:5432/geo"
-else:
-    DB_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DB_URL = config(
+    "DB_URL", 
+    cast=str, 
+    default=f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
 
 MIN_CONNECTIONS_COUNT: int = config("MIN_CONNECTIONS_COUNT", cast=int, default=10)
 MAX_CONNECTIONS_COUNT: int = config("MAX_CONNECTIONS_COUNT", cast=int, default=20)
 
-JWT_PRIVATE_KEY = config("JWT_PRIVATE_KEY", cast=str, default="june212021")
-TEST_API_KEY = config("TEST_API_KEY", cast=str)
+JWT_PRIVATE_KEY = config("JWT_PRIVATE_KEY", cast=Secret, default="june212021")
+TEST_API_KEY = config("TEST_API_KEY", cast=Secret)
 # will never expire (1000 weeks), belongs to test@foobar.com
