@@ -23,25 +23,31 @@ async def neighborhood(
     apikey: str, 
     conn: Connection = Depends(_get_connection_from_pool)
 ) -> FeatureCollection:
-    # import pdb; pdb.set_trace()
+    
     try:
         decoded = await TokenService.verify_token(conn, apikey)
+        if 'expired' in decoded and decoded['expired'] == True:
+            raise ExpiredSignatureError
         del decoded
         return await NeighborhoodService.get_neighborhood(conn, lat, lon)
+    except ExpiredSignatureError as e:
+        #TODO redirect user to "token/" for updating apikey
+        logger.info(e)
+        payload = {
+            "message": "Token has expired. Please get a new API Key 🥲", 
+            "apikey": apikey, 
+            'request': request
+        }
+        return templates.TemplateResponse("request_token.html", payload)
     except TokenNotFoundError as e:
-        # token not found exception
-        logger.info("Token not found")
-        
-        return JSONResponse(status_code=401, content={"message": "Authorization Required"})
+        #TODO redirect user to "token/" for updating apikey
+        logger.info(e)
+        payload = {"message": "Token not found, please get a new API Key 🥲", "apikey": apikey, 'request': request}
+        return templates.TemplateResponse("request_token.html", payload)
     except LatLonError as e:
         # bad input (lat lon)
         logger.info(e)
         return JSONResponse(status_code=400, content={"message": "Bad Request"})
-    except ExpiredSignatureError as e:
-        #TODO redirect user to "token/" for updating apikey
-        logger.info(e)
-        payload = {"message": "Token expired, please get a new API Key 🥲", "apikey": apikey}
-        return templates.TemplateResponse("request_token.html", payload)
     except DecodeError as e:
         logger.info(e)
     except UndefinedTableError as e:

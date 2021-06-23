@@ -24,20 +24,10 @@ def config():
 
 @pytest.fixture
 def expired_apikey():
-    from app.config import JWT_PRIVATE_KEY, ALGORITHM
-    payload = {
-        'iss': "test@foobar.com",
-        'exp': datetime.utcnow()
-    }
-    encoded = jwt.encode(payload, JWT_PRIVATE_KEY, algorithm=ALGORITHM)
-    return encoded
+    expired_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0QGZvb2Jhci5jb20iLCJleHAiOjE2MjQ0Mzg1Njh9.hk4NMXcMzw5uVzwg1t3fOsfsuMby1qBzK5m5gsk8Gj4'
+    return expired_token
 
 @pytest.fixture
 def valid_apikey():
-    from app.config import JWT_PRIVATE_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-    payload = {
-        'iss': "test@foobar.com",
-        'exp': datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    }
-    encoded = jwt.encode(payload, JWT_PRIVATE_KEY, algorithm=ALGORITHM)
-    return encoded
+    from app.config import TEST_API_KEY
+    return TEST_API_KEY

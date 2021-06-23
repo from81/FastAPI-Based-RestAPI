@@ -20,7 +20,7 @@ def test_create_token_json(app: FastAPI):
             headers={
                 "Content-Type": "application/json"
             },
-            json={"email": "test@foobar.com"}
+            json={"email": "test@foo.bar.com"}
         )
     assert response.status_code == 200
     assert response.json()["message"] == "OK"
@@ -38,7 +38,7 @@ def test_get_neighborhood(app: FastAPI, config):
             params={
                 "lat": -33.8657512, 
                 "lon": 151.2030053,
-                "apikey": config.API_KEY
+                "apikey": config.TEST_API_KEY
             }
         )
     js = response.json()
@@ -56,9 +56,9 @@ def test_get_neighborhood_expired_apikey(app: FastAPI, expired_apikey: str):
                 "apikey": expired_apikey
             }
         )
-    assert response.template.name == 'request_token.html'
-    expected_payload = {
-        "message": "Token expired, please get a new API Key 🥲", 
-        "apikey": expired_apikey
-    }
-    assert response.json() == expected_payload
+        assert response.template.name == 'request_token.html'
+        assert response.context['message'] == "Token has expired. Please get a new API Key 🥲"
+        assert response.context['apikey'] == expired_apikey
+
+# fake apikey
+    

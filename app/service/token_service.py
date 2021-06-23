@@ -21,7 +21,7 @@ class TokenService:
     def issue_token(conn: Connection, email: str) -> str:
         payload = {
             'iss': email,
-            'exp': datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
+            'exp': datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         }
         encoded = jwt.encode(payload, JWT_PRIVATE_KEY, algorithm=ALGORITHM)
         return encoded
@@ -32,7 +32,7 @@ class TokenService:
         await TokenService.create_table_if_not_exists(conn)
         
         # delete any previously issued tokens
-        await queries.delete_apikey(conn, email)
+        # await queries.delete_apikey(conn, email)
 
         try:
             ret = await queries.insert_apikey(conn, email, token)
@@ -61,7 +61,8 @@ class TokenService:
             return decoded
         except ExpiredSignatureError as e:
             logger.warning(e)
-            raise e
+            decoded = {'expired': True}
+            return decoded
         except DecodeError as e:
             # triggered if empty string passed as token
             logger.warning(e)
