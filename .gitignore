@@ -14,3 +14,4 @@ psql.sh
 *.ipynb
 .coverage
 coverage.xml
+nsw_neighborhood.json
