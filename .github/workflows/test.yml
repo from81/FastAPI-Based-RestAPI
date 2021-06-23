@@ -14,6 +14,8 @@ jobs:
       DB_HOST: localhost
       DB_PORT: 5432
       DB_NAME: geo
+      JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+      TEST_API_KEY: ${{ secrets.TEST_API_KEY }}
     services:
       postgres:
         image: postgis/postgis
