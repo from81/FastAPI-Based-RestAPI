@@ -8,7 +8,7 @@ The order in which configuration values are read is:
 3. The default value given in config.
 """
 
-DEBUG = True
+DEBUG = False
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # one week
 ALGORITHM = "HS256"
 
