@@ -1,4 +1,4 @@
-name: Test Coveralls
+name: Test and Codecov
 on:
   push:
     branches:
@@ -8,13 +8,19 @@ on:
 jobs:
   Test:
     runs-on: ubuntu-latest
+    env:
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: geo
     services:
       postgres:
         image: postgis/postgis
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: geo
+          POSTGRES_USER: ${{ env.DB_USERNAME }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+          POSTGRES_DB: ${{ env.DB_NAME }}
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -29,16 +35,16 @@ jobs:
     - name: Install libraries
       run: pip install -r requirements.txt
     - name: Create tables
-      run: PGPASSWORD="postgres" psql -U postgres -h localhost -d geo -f app/sql/ddl.sql
+      run: PGPASSWORD=${{ env.DB_PASSWORD }} psql -U ${{ env.DB_USERNAME }} -h ${{ env.DB_HOST }} -d ${{ env.DB_NAME }} -f app/sql/ddl.sql
     - name: Insert data
       run: |
         sudo add-apt-repository ppa:ubuntugis/ppa
         sudo apt-get update
         sudo apt-get install gdal-bin
         ogrinfo --version
-    - run: ogr2ogr -f "PostgreSQL" PG:"host=localhost port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_polygon.json" -nln nsw_polygon -nlt POLYGON
-    - run: ogr2ogr -f "PostgreSQL" PG:"host=localhost port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_poi.json" -nln nsw_poi -nlt POLYGON
-    - run: ogr2ogr -f "PostgreSQL" PG:"host=localhost port=5432 dbname=geo user='postgres' password='postgres'" "data/nsw_neighborhood_sample.json" -nln nsw_neighborhood -nlt POLYGON
+    - run: ogr2ogr -f "PostgreSQL" PG:"host=${{ env.DB_HOST }} port=${{ env.DB_PORT }} dbname=${{ env.DB_NAME }} user=${{ env.DB_USERNAME }} password=${{ env.DB_PASSWORD }}" "data/nsw_polygon.json" -nln nsw_polygon -nlt POLYGON
+    - run: ogr2ogr -f "PostgreSQL" PG:"host=${{ env.DB_HOST }} port=${{ env.DB_PORT }} dbname=${{ env.DB_NAME }} user=${{ env.DB_USERNAME }} password=${{ env.DB_PASSWORD }}" "data/nsw_poi.json" -nln nsw_poi -nlt POLYGON
+    - run: ogr2ogr -f "PostgreSQL" PG:"host=${{ env.DB_HOST }} port=${{ env.DB_PORT }} dbname=${{ env.DB_NAME }} user=${{ env.DB_USERNAME }} password=${{ env.DB_PASSWORD }}" "data/nsw_neighborhood_sample.json" -nln nsw_neighborhood -nlt POLYGON
     - name: Test
       run: pytest --verbose --color=yes --cov=app --cov-report=xml
     - name: Upload to Codecov
