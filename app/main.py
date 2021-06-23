@@ -12,7 +12,8 @@ import uvicorn
 from app.config import (
     DB_URL,
     MIN_CONNECTIONS_COUNT,
-    MAX_CONNECTIONS_COUNT
+    MAX_CONNECTIONS_COUNT,
+    DEBUG
 )
 from app.endpoint.neighborhood import neighborhood_router
 from app.endpoint.apikey import apikey_router
@@ -23,7 +24,7 @@ app = FastAPI(
     title="Geo RestAPI project",
     description="This is a very fancy project, with auto docs for the API and everything",
     version="1.0",
-    debug=True
+    debug=DEBUG
 )
 app.mount("/static", StaticFiles(directory="app/templates/static"), name="static")
 app.include_router(neighborhood_router, prefix="/neighborhood")
