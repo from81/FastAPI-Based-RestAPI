@@ -3,9 +3,8 @@ import os
 from starlette.config import Config
 from starlette.datastructures import Secret
 
-config = Config('.env')
-
 DEBUG = True
+config = Config('.env')
 
 DB_USERNAME = config("DB_USERNAME", cast=str, default="postgres")
 DB_PASSWORD = config("DB_PASSWORD", cast=Secret, default="postgres")
