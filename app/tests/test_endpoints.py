@@ -31,14 +31,14 @@ def test_create_apikey(app: FastAPI):
     assert response.status_code == 200
     assert response.template.name == 'request_token.html'
 
-def test_get_neighborhood(app: FastAPI, config: Config):
+def test_get_neighborhood(app: FastAPI, valid_apikey: str):
     with TestClient(app) as client:
         response = client.get(
             "/neighborhood", 
             params={
                 "lat": -33.8657512, 
                 "lon": 151.2030053,
-                "apikey": str(config.TEST_API_KEY)
+                "apikey": valid_apikey
             }
         )
     js = response.json()
@@ -61,4 +61,3 @@ def test_get_neighborhood_expired_apikey(app: FastAPI, expired_apikey: str):
         assert response.context['apikey'] == expired_apikey
 
 # fake apikey
-    
