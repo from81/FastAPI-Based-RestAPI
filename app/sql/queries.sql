@@ -25,18 +25,23 @@ SELECT email, token FROM apikey WHERE token = :token;
 -- Delete rows with matching email address
 DELETE FROM apikey WHERE email = :email;
 
+-- name: get-neighborhood-from-coordinate
+-- Given a coordinate, return neighborhood and geometry
+SELECT neighborhood, ST_AsGeoJSON(geometry,) AS geometry
+FROM nsw_neighborhood
+WHERE ST_Contains(
+    ST_Transform(geometry, 8058), 
+    ST_Transform(ST_SetSRID(ST_MakePoint(:lon, :lat), 4326), 8058)
+);
+
 -- name: get-neighborhood-from-coordinate-as-geojson
 -- Given a coordinate, return neighborhood GeoJSON format
 WITH neighborhood AS (
-    SELECT neighborhood, ST_Transform(geometry, 4326) AS geometry
+    SELECT neighborhood, geometry
     FROM nsw_neighborhood
     WHERE ST_Contains(
-        geometry, 
-        ST_Transform(
-            ST_SetSRID(
-                ST_MakePoint(:lon, :lat), 
-                4326), 
-            8058)
+        ST_Transform(geometry, 8058), 
+        ST_Transform(ST_SetSRID(ST_MakePoint(:lon, :lat), 4326), 8058)
     )
 )
 SELECT json_build_object(
@@ -46,12 +51,3 @@ SELECT json_build_object(
     json_agg(ST_AsGeoJSON(neighborhood.*)::json)
 )
 FROM neighborhood;
-
--- name: get-neighborhood-from-coordinate
--- Given a coordinate, return neighborhood and geometry
-SELECT neighborhood, ST_AsGeoJSON(ST_Transform(geometry, 4326)) AS geometry
-FROM nsw_neighborhood
-WHERE ST_Contains(
-    geometry, 
-    ST_Transform(ST_SetSRID(ST_MakePoint(:lon, :lat), 4326), 8058)
-);
