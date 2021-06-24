@@ -1,20 +1,23 @@
-# Design
 
+# About
 ![](diagram.png)
 
-# Database
-
-make `psql.sh` executable
-`chmod +x psql.sh`
-
-connect to db (requires installation of [jq](https://stedolan.github.io/jq/)):
-`./psql.sh credentials_prod.json`
-
-## Data
+# Data sources
+`ogr2ogr -f "PostgreSQL" PG:"dbname=$POSTGRES_DB user=$POSTGRES_USER password=$POSTGRES_PASSWORD" data/nsw_polygon.json -nln nsw_polygon -nlt POLYGON`
 
 - OSM Australia
 - boundary: https://www.igismap.com/australia-shapefile-download/
 - neighborhood: https://data.gov.au/data/dataset/nsw-local-government-areas
+
+# Database
+connect to db (requires installation of [jq](https://stedolan.github.io/jq/)):
+`./psql.sh credentials_prod.json`
+## Run
+```
+docker build -t postgis_image -f ./Dockerfile_postgis .
+docker container run -it --publish 5432:5432 --rm --env-file ./.env --name postgis postgis_image bash
+docker container run -it --publish 5432:5432 --env-file ./.env --name postgis postgis_image bash
+```
 
 # Rest API
 
@@ -25,11 +28,11 @@ uvicorn --host=0.0.0.0 --port=80 app.main:app
 ```
 
 ```
-docker build -t geoapiv1 ./
+docker build -t geoapi_image ./
 
 docker container run --publish 80:80 --detach --env-file ./.env --name <container_name> <image_name>
-docker container run --publish 80:80 --detach --env-file ./.env --name geoapi geoapiv1
-docker container run --publish 80:80 --env-file ./.env --name geoapi geoapiv1
+docker container run --publish 80:80 --detach --env-file ./.env --name geoapi geoapi_image
+docker container run --publish 80:80 --env-file ./.env --name geoapi geoapi_image
 ```
 
 ## Update desired task count
