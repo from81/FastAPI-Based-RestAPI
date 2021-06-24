@@ -1,0 +1,28 @@
+# obstacle: can't keep postgis container running like `docker container run -it <image_name> bash`
+# # version: "1.0"  # optional since v1.27.0
+# services:
+#   api:
+#     build: .
+#     env_file: .env
+#     ports:
+#       - 80:80
+#     depends_on:
+#       - postgis
+#     links:
+#       - postgis
+#   postgis:
+#     # build: 
+#     #   dockerfile: ./Dockerfile_db
+#     #   context: .
+#     environment:
+#         POSTGRES_USER: ${DB_USERNAME}
+#         POSTGRES_PASSWORD: ${DB_PASSWORD}
+#         POSTGRES_DB: ${DB_NAME}
+#     image: postgis_image
+#     env_file: .env
+#     ports: 
+#       - ${DB_PORT}:${DB_PORT}
+#     stdin_open: true # docker run -i
+#     tty: true        # docker run -t
+#     command: while :; do :; done & kill -STOP $! && wait $!
+
