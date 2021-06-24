@@ -8,7 +8,7 @@ from loguru import logger
 
 from app.config import JWT_PRIVATE_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.exceptions.exceptions import TokenNotFoundError
-from app.queries import queries
+from app.db.sql_queries import queries
 
 class TokenService:
     @staticmethod

@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from loguru import logger
 
-from app.database import _get_connection_from_pool
+from app.db.database import _get_connection_from_pool
 from app.service.token_service import TokenService
 
 apikey_router = APIRouter()

@@ -12,7 +12,7 @@ COPY ./docker-entrypoint.sh /
 RUN ["chmod", "+x", "/docker-entrypoint.sh"]
 
 # Set up project directory
-COPY ./app/sql/ddl.sql /docker-entrypoint-initdb.d/ddl.sql
+COPY ./app/db/ddl.sql /docker-entrypoint-initdb.d/ddl.sql
 COPY ./insert_data.py /docker-entrypoint-initdb.d/insert_data.py
 
 # copy data
@@ -36,8 +36,8 @@ RUN apt-get install --reinstall libpq-dev
 RUN pip install psycopg2
 
 RUN service postgresql start
-COPY ./postgresql.conf /etc/postgresql/12/main/postgresql.conf
-COPY ./pg_hba.conf /etc/postgresql/12/main/pg_hba.conf
+COPY ./app/db/postgresql.conf /etc/postgresql/12/main/postgresql.conf
+COPY ./app/db/pg_hba.conf /etc/postgresql/12/main/pg_hba.conf
 RUN service postgresql restart
 
 # start postgres and create user

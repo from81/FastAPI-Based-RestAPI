@@ -5,7 +5,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.responses import JSONResponse
 from loguru import logger
 
-from app.database import _get_connection_from_pool
+from app.db.database import _get_connection_from_pool
 from app.service.token_service import TokenService
 
 token_router = APIRouter()

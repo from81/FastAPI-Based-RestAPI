@@ -6,7 +6,7 @@ from fastapi.templating import Jinja2Templates
 from jwt.exceptions import ExpiredSignatureError, DecodeError
 from loguru import logger
 
-from app.database import _get_connection_from_pool
+from app.db.database import _get_connection_from_pool
 from app.exceptions.exceptions import TokenNotFoundError, LatLonError
 from app.model.feature import FeatureCollection
 from app.service.neighborhood_service import NeighborhoodService
