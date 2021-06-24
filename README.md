@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/from81/FastAPI-Based-RestAPI/branch/main/graph/badge.svg?token=TVHQ32ZJ3E)](https://codecov.io/gh/from81/FastAPI-Based-RestAPI)
 
 # About
 ![](misc/diagram.png)
