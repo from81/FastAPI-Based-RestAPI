@@ -16,9 +16,9 @@ COPY ./app/db/ddl.sql /docker-entrypoint-initdb.d/ddl.sql
 COPY ./insert_data.py /docker-entrypoint-initdb.d/insert_data.py
 
 # copy data
-COPY ./data/nsw_polygon.json /data/nsw_polygon.json
-COPY ./data/nsw_poi.json /data/nsw_poi.json
-COPY ./data/nsw_neighborhood.json /data/nsw_neighborhood.json
+COPY ./data/out/nsw_polygon.json /data/nsw_polygon.json
+COPY ./data/out/nsw_poi.json /data/nsw_poi.json
+COPY ./data/out/nsw_neighborhood.json /data/nsw_neighborhood.json
 
 RUN apt-get update \
   && apt install software-properties-common -y \

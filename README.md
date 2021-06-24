@@ -1,6 +1,6 @@
 
 # About
-![](diagram.png)
+![](misc/diagram.png)
 
 # Data sources
 `ogr2ogr -f "PostgreSQL" PG:"dbname=$POSTGRES_DB user=$POSTGRES_USER password=$POSTGRES_PASSWORD" data/nsw_polygon.json -nln nsw_polygon -nlt POLYGON`
