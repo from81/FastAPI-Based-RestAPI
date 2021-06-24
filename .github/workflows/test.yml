@@ -37,7 +37,7 @@ jobs:
     - name: Install libraries
       run: pip install -r requirements.txt
     - name: Create tables
-      run: PGPASSWORD=${{ env.DB_PASSWORD }} psql -U ${{ env.DB_USERNAME }} -h ${{ env.DB_HOST }} -d ${{ env.DB_NAME }} -f app/sql/ddl.sql
+      run: PGPASSWORD=${{ env.DB_PASSWORD }} psql -U ${{ env.DB_USERNAME }} -h ${{ env.DB_HOST }} -d ${{ env.DB_NAME }} -f app/db/ddl.sql
     - name: Insert data
       run: |
         sudo add-apt-repository ppa:ubuntugis/ppa
