@@ -44,11 +44,13 @@ jobs:
         sudo apt-get update
         sudo apt-get install gdal-bin
         ogrinfo --version
-        ogr2ogr -f "PostgreSQL" PG:"host=${{ env.DB_HOST }} port=${{ env.DB_PORT }} dbname=${{ env.DB_NAME }} user=${{ env.DB_USERNAME }} password=${{ env.DB_PASSWORD }}" "data/nsw_polygon.json" -nln nsw_polygon -nlt POLYGON
-        ogr2ogr -f "PostgreSQL" PG:"host=${{ env.DB_HOST }} port=${{ env.DB_PORT }} dbname=${{ env.DB_NAME }} user=${{ env.DB_USERNAME }} password=${{ env.DB_PASSWORD }}" "data/nsw_poi.json" -nln nsw_poi -nlt POLYGON
-        ogr2ogr -f "PostgreSQL" PG:"host=${{ env.DB_HOST }} port=${{ env.DB_PORT }} dbname=${{ env.DB_NAME }} user=${{ env.DB_USERNAME }} password=${{ env.DB_PASSWORD }}" "data/nsw_neighborhood_sample.json" -nln nsw_neighborhood -nlt POLYGON
+        ogr2ogr -f "PostgreSQL" PG:"host=${{ env.DB_HOST }} port=${{ env.DB_PORT }} dbname=${{ env.DB_NAME }} user=${{ env.DB_USERNAME }} password=${{ env.DB_PASSWORD }}" "data/out/nsw_polygon.json" -nln nsw_polygon -nlt POLYGON
+        ogr2ogr -f "PostgreSQL" PG:"host=${{ env.DB_HOST }} port=${{ env.DB_PORT }} dbname=${{ env.DB_NAME }} user=${{ env.DB_USERNAME }} password=${{ env.DB_PASSWORD }}" "data/out/nsw_poi.json" -nln nsw_poi -nlt POLYGON
+        ogr2ogr -f "PostgreSQL" PG:"host=${{ env.DB_HOST }} port=${{ env.DB_PORT }} dbname=${{ env.DB_NAME }} user=${{ env.DB_USERNAME }} password=${{ env.DB_PASSWORD }}" "data/out/nsw_neighborhood_sample.json" -nln nsw_neighborhood -nlt POLYGON
     - name: Test
       run: pytest --verbose --color=yes --cov=app --cov-report=xml
+      with:
+        fail_ci_if_error: true
     - name: Upload to Codecov
       uses: codecov/codecov-action@v1
       with:
