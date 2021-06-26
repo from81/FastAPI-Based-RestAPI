@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+def test_home(app: FastAPI):
+    client = TestClient(app)
+    response = client.get("/test")
+    assert response.status_code == 200
+
 def test_app(app: FastAPI):
     client = TestClient(app)
     response = client.get("/test")

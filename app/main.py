@@ -53,19 +53,23 @@ async def startup():
         logger.warning(e)
         raise e
 
-# @app.on_event("shutdown")
-# async def shutdown():
-#     logger.info(f"Closing connection to database -> {DB_URL_ENCRYPT}")
+@app.on_event("shutdown")
+async def shutdown():
+    logger.info(f"Closing connection to database -> {DB_URL_ENCRYPT}")
 
-#     try:
-#         await app.state.pool.close()
-#         logger.info("Connection closed")
-#     except PostgresError as e:
-#         logger.warning(e)
-#         raise DBDisconnectError from e
-#     except Exception as e:
-#         logger.warning(e)
-#         raise e
+    try:
+        await app.state.pool.close()
+        logger.info("Connection closed")
+    except PostgresError as e:
+        logger.warning(e)
+        raise DBDisconnectError from e
+    except Exception as e:
+        logger.warning(e)
+        raise e
+
+@app.get("/")
+def home():
+    return JSONResponse(status_code=200, content={"message": "Welcome to GeoAPI"})
 
 @app.get("/test")
 def test():
