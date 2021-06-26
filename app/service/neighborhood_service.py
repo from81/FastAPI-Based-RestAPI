@@ -6,7 +6,7 @@ from loguru import logger
 
 from app.db.sql_queries import queries
 from app.utils.geojson_formatter import GeoJSONFormatter
-
+from app.exceptions.exceptions import LatLonError
 class NeighborhoodService:
     @staticmethod
     @logger.catch

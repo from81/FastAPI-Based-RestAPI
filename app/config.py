@@ -26,6 +26,10 @@ DB_URL = config(
     default=f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
+n = len(DB_HOST) // 2
+DB_HOST_ENCRYPT = ('*' * n) + DB_HOST[n:]
+DB_URL_ENCRYPT = f"postgresql://{DB_USERNAME}:{'*' * len(str(DB_PASSWORD))}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
 MIN_CONNECTIONS_COUNT: int = config("MIN_CONNECTIONS_COUNT", cast=int, default=10)
 MAX_CONNECTIONS_COUNT: int = config("MAX_CONNECTIONS_COUNT", cast=int, default=20)
 
