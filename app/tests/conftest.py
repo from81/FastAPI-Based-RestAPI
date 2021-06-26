@@ -12,10 +12,10 @@ def app() -> FastAPI:
     from app.main import app  # local import for testing purpose
     return app
 
-@pytest.fixture
-def client() -> TestClient:
-    from app.main import app  # local import for testing purpose
-    return TestClient(app)
+# @pytest.fixture
+# def client(app: FastAPI) -> TestClient:
+#     client = TestClient(app)
+#     yield client
 
 @pytest.fixture
 def config():

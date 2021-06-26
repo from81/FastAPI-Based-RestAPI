@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from starlette.config import Config
 
 def test_app(app: FastAPI):
     client = TestClient(app)
@@ -59,5 +58,3 @@ def test_get_neighborhood_expired_apikey(app: FastAPI, expired_apikey: str):
         assert response.template.name == 'request_token.html'
         assert response.context['message'] == "Token has expired. Please get a new API Key 🥲"
         assert response.context['apikey'] == expired_apikey
-
-# fake apikey
