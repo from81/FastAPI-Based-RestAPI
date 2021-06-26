@@ -56,4 +56,12 @@ jobs:
         files: ./coverage.xml
         fail_ci_if_error: true
         # verbose: true
+    - name: Trigger Deployment if Test on Main successfully
+      if: success() && github.ref == 'main'
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.REPO_GHA_PAT }}
+        repository: ${{ github.repository }}
+        event-type: trigger-deployment
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
         

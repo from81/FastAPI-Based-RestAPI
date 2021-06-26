@@ -1,9 +1,11 @@
 # Build and push container image to AWS ECR, and deploy service with updated task definition
 name: Deploy
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
+  repository_dispatch:
+    types: [trigger-deployment]
 jobs:
   Build-Push-Deploy-Workflow:
     runs-on: ubuntu-latest
