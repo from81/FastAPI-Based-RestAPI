@@ -12,3 +12,4 @@ coverage.xml
 *.ipynb
 data/in/**
 nsw_neighborhood.json
+/.ipynb_checkpoints/

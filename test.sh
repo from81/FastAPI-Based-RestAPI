@@ -1,5 +1,5 @@
 # script for integration test
-# deployes postgis docker 
+# deploys postgis docker
 set -e
 source ~/opt/anaconda3/etc/profile.d/conda.sh
 docker build -t postgis_image -f ./Dockerfile_postgis .

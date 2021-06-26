@@ -7,8 +7,9 @@ from starlette.config import Config
 
 from app.exceptions.exceptions import DBConnectionError, DBDisconnectError
 
+
 def test_startup(app: FastAPI, monkeypatch: MonkeyPatch):
-    monkeypatch.setenv("DB_HOST", "foobar")
+    monkeypatch.setenv("DB_HOST", "foobar") #TODO this test is invalid
     try:
         with TestClient(app) as client:
             pass
