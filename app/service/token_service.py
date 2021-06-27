@@ -50,7 +50,7 @@ class TokenService:
     async def verify_token(conn: Connection, token: str) -> dict:
         await TokenService.create_table_if_not_exists(conn)
         ret = await queries.verify_apikey(conn, token)
-        
+
         if len(ret) == 0:
             raise TokenNotFoundError(token)
         
