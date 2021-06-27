@@ -1,9 +1,11 @@
 aiofiles==0.7.0
 aiosql==3.2.0
+asgi-lifespan-1.0.1
 asyncpg==0.23.0
 boto3==1.17.101
 fastapi==0.65.2
 geojson==2.5.0
+httpx==0.12.0
 Jinja2==2.11.3
 loguru==0.5.3
 numpy==1.20.3

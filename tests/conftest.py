@@ -3,11 +3,11 @@ import sys
 
 sys.path.append('../app/')
 
+from asgi_lifespan import LifespanManager
+from asyncpg.pool import Pool
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from starlette.config import Config
+from httpx import AsyncClient
 import pytest
-import jwt
 
 
 @pytest.fixture
@@ -15,11 +15,6 @@ def app() -> FastAPI:
     from app.main import app  # local import for testing purpose
     return app
 
-
-# @pytest.fixture
-# def client(app: FastAPI) -> TestClient:
-#     client = TestClient(app)
-#     yield client
 
 @pytest.fixture
 def config():
@@ -37,3 +32,24 @@ def expired_apikey():
 def valid_apikey(scope='session'):
     from app.config import TEST_API_KEY
     return str(TEST_API_KEY)
+
+
+@pytest.fixture
+async def initialized_app(app: FastAPI) -> FastAPI:
+    async with LifespanManager(app):
+        yield app
+
+
+@pytest.fixture
+def pool(initialized_app: FastAPI) -> Pool:
+    return initialized_app.state.pool
+
+
+@pytest.fixture
+async def client(initialized_app: FastAPI) -> AsyncClient:
+    async with AsyncClient(
+            app=initialized_app,
+            base_url="http://testserver",
+            headers={"Content-Type": "application/json"},
+    ) as client:
+        yield client

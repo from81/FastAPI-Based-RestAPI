@@ -31,7 +31,6 @@ async def neighborhood(
         del decoded
         return await NeighborhoodService.get_neighborhood(conn, lat, lon)
     except ExpiredSignatureError as e:
-        #TODO redirect user to "token/" for updating apikey
         logger.info(e)
         payload = {
             "message": "Token has expired. Please get a new API Key 🥲", 
@@ -40,7 +39,6 @@ async def neighborhood(
         }
         return templates.TemplateResponse("request_token.html", payload)
     except TokenNotFoundError as e:
-        #TODO redirect user to "token/" for updating apikey
         logger.info(e)
         payload = {"message": "Token not found, please get a new API Key 🥲", "apikey": apikey, 'request': request}
         return templates.TemplateResponse("request_token.html", payload)

@@ -17,9 +17,9 @@ class _GeometryBase(BaseModel, abc.ABC):
 
     coordinates: Any  # will be constrained in child classes
 
-    @property
-    def __geo_interface__(self):
-        return self.dict()
+    # @property
+    # def __geo_interface__(self):
+    #     return self.dict()
 
 
 class Point(_GeometryBase):

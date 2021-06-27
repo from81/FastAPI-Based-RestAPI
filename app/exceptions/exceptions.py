@@ -27,7 +27,7 @@ class LatLonError(Exception):
         super().__init__(self.message)
 
     def __str__(self) -> str:
-        return f"{self.message} -> lat={lat:.4f} lon={lon:.4f}"
+        return f"{self.message} -> lat={self.lat:.4f} lon={self.lon:.4f}"
 
 class TokenNotFoundError(Exception):
     def __init__(self, token: str, message: str="Token not found"):
