@@ -56,7 +56,7 @@ jobs:
         files: ./coverage.xml
         fail_ci_if_error: true
     - name: Trigger Deployment if Test on Main successfully
-      if: success() && github.ref == 'main'
+      if: success() && github.ref == 'refs/heads/main'
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.REPO_GHA_PAT }}
