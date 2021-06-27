@@ -3,9 +3,10 @@ from typing import Any, Dict
 import numpy as np
 
 class GeoJSONFormatter:
-    def __init__(self, data: Dict[str, Any]):
+    def __init__(self, data: Dict[str, Any], right_hand_rule=True):
         self.raw_data = self.processed_data = data
-        self.right_hand_rule()
+        if right_hand_rule:
+            self.right_hand_rule()
         self.round_decimal(6)
 
     def right_hand_rule(self):
@@ -16,6 +17,7 @@ class GeoJSONFormatter:
         area it bounds, i.e., exterior rings are counterclockwise, and
         holes are clockwise.
         """
+
         data = self.processed_data['features'][0]['geometry']['coordinates'][0]
         data = data[::-1]
         self.processed_data['features'][0]['geometry']['coordinates'][0] = data

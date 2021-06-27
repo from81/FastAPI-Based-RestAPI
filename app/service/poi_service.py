@@ -9,16 +9,15 @@ from app.utils.geojson_formatter import GeoJSONFormatter
 from app.exceptions.exceptions import LatLonError
 
 
-class NeighborhoodService:
+class PoiService:
     @staticmethod
     @logger.catch
-    async def get_neighborhood(conn: Connection, lat: float, lon: float) -> Dict[str, Any]:
-        ret: List = await queries.get_neighborhood_as_geojson(conn, lat=lat, lon=lon)
-
+    async def get_k_nearest_neighbors(conn: Connection, lat: float, lon: float, k: int) -> Dict[str, Any]:
+        ret: List = await queries.get_k_poi_as_geojson(conn, lat=lat, lon=lon, k=k)
         geojson_data = geojson.loads(ret[0]['json_build_object'])
 
         if geojson_data['features'] and len(geojson_data['features']) > 0:
-            formatter = GeoJSONFormatter(geojson_data)
+            formatter = GeoJSONFormatter(geojson_data, right_hand_rule=False)
             return formatter.get_processed_data()
         else:
             raise LatLonError(lat, lon)

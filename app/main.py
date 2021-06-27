@@ -20,6 +20,7 @@ from app.config import (
 )
 from app.endpoint.neighborhood import neighborhood_router
 from app.endpoint.apikey import apikey_router
+from app.endpoint.poi import poi_router
 from app.endpoint.token import token_router
 from app.exceptions.exceptions import DBConnectionError, DBDisconnectError
 from app.exceptions.handlers import exception_handlers
@@ -35,7 +36,7 @@ app.mount("/static", StaticFiles(directory="app/templates/static"), name="static
 app.include_router(neighborhood_router, prefix="/neighborhood")
 app.include_router(apikey_router, prefix="/apikey")
 app.include_router(token_router, prefix="/token")
-
+app.include_router(poi_router, prefix="/poi")
 
 @app.on_event("startup")
 async def startup():

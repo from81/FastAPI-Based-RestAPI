@@ -85,6 +85,7 @@ def test_get_neighborhood_expired_apikey(app: FastAPI, expired_apikey: str):
         assert response.context['message'] == "Token has expired. Please get a new API Key 🥲"
         assert response.context['apikey'] == expired_apikey
 
+
 # TODO obstacle: TokenNotFoundError raised, but not detected by pytest?
 # @pytest.mark.asyncio
 # async def test_verify_invalid_token(pool: Pool):
@@ -121,3 +122,23 @@ def test_get_neighborhood_expired_apikey(app: FastAPI, expired_apikey: str):
 #             ret: Dict = await NeighborhoodService.get_neighborhood(conn, lat, lon)
 #
 #     assert 'Invalid coordinates' in str(excinfo.value)
+
+
+def test_get_k_poi(app: FastAPI, valid_apikey: str):
+    k = 5
+    with TestClient(app) as client:
+        response = client.get(
+            "/poi",
+            params={
+                "lat": -33.8657512,
+                "lon": 151.2030053,
+                "apikey": valid_apikey,
+                "n": k
+            }
+        )
+    js = response.json()
+    assert response.status_code == 200
+    assert js["type"] == "FeatureCollection"
+    assert len(js["features"]) == k
+    assert js["features"][0]["properties"].keys() == {"fclass", "name", "osm_id", "distance"}
+    assert js["features"][0]["geometry"]["type"] == "Point"
