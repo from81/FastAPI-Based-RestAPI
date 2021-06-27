@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from loguru import logger
 import uvicorn
 
+from app.config import config
 from app.config import (
     DB_URL,
     DB_URL_ENCRYPT,
@@ -47,12 +48,9 @@ async def startup():
             max_size=MAX_CONNECTIONS_COUNT,
         )
         logger.info("Connection established")
-    except PostgresError as e:
-        logger.warning(e)
-        raise DBConnectionError from e
     except Exception as e:
         logger.warning(e)
-        raise e
+        raise DBConnectionError from e
 
 
 @app.on_event("shutdown")
