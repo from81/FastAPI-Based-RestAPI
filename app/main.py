@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from loguru import logger
 import uvicorn
 
+from app.config import config
 from app.config import (
     DB_URL,
     DB_URL_ENCRYPT,
@@ -35,6 +36,7 @@ app.include_router(neighborhood_router, prefix="/neighborhood")
 app.include_router(apikey_router, prefix="/apikey")
 app.include_router(token_router, prefix="/token")
 
+
 @app.on_event("startup")
 async def startup():
     logger.info(f"Connecting to database -> {DB_URL_ENCRYPT}")
@@ -46,12 +48,10 @@ async def startup():
             max_size=MAX_CONNECTIONS_COUNT,
         )
         logger.info("Connection established")
-    except PostgresError as e:
-        logger.warning(e)
-        raise DBConnectionError from e
     except Exception as e:
         logger.warning(e)
-        raise e
+        raise DBConnectionError from e
+
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -67,13 +67,16 @@ async def shutdown():
         logger.warning(e)
         raise e
 
+
 @app.get("/")
 def home():
     return JSONResponse(status_code=200, content={"message": "Welcome to GeoAPI"})
 
+
 @app.get("/test")
 def test():
     return JSONResponse(status_code=200, content={"message": "OK"})
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=80)

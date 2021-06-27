@@ -9,7 +9,7 @@ The order in which configuration values are read is:
 """
 
 DEBUG = False
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # one week
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # one week
 ALGORITHM = "HS256"
 
 config = Config('.env')
@@ -21,15 +21,14 @@ DB_PORT = config("DB_PORT", cast=str, default="5432")
 DB_NAME = config("DB_NAME", cast=str, default="geo")
 
 DB_URL = config(
-    "DB_URL", 
-    cast=str, 
+    "DB_URL",
+    cast=str,
     default=f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
 n = len(DB_HOST) // 2
 DB_HOST_ENCRYPT = ('*' * n) + DB_HOST[n:]
-# DB_URL_ENCRYPT = str(DB_URL)
-DB_URL_ENCRYPT = f"postgresql://{DB_USERNAME}:{'*' * len(str(DB_PASSWORD))}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DB_URL_ENCRYPT = f"postgresql://{DB_USERNAME}:{'*' * len(str(DB_PASSWORD))}@{DB_HOST_ENCRYPT}:{DB_PORT}/{DB_NAME}"
 
 MIN_CONNECTIONS_COUNT: int = config("MIN_CONNECTIONS_COUNT", cast=int, default=10)
 MAX_CONNECTIONS_COUNT: int = config("MAX_CONNECTIONS_COUNT", cast=int, default=20)
